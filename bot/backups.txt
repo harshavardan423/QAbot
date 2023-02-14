@@ -1,0 +1,53 @@
+# def score(words, response):
+#     word_list = words.split()
+#     sentences = nltk.sent_tokenize(response)
+#     # s_score = fuzz.token_set_ratio(word_list,dictionary)
+#     matching_words = list(set(word_list).intersection(response))
+#     matching_words_count = len(matching_words)
+#     total_words_count = len(word_list)
+#     percentage = (matching_words_count / total_words_count) * 100
+#     fraction = f"{matching_words_count}/{total_words_count}"
+
+#     # Calculate matching sentences
+#     matching_sentences_count = 0
+#     for sentence in sentences:
+#         sentence_words = sentence.split()
+#         if any(word in sentence_words for word in word_list):
+#             matching_sentences_count += 1
+#     sentence_score = (matching_sentences_count / len(sentences)) * 100
+
+#     return percentage, fraction, sentence_score
+
+
+
+
+        # # Tokenize and preprocess words and response
+        # question_tokens = word_tokenize(words.lower())
+        # answer_tokens = word_tokenize(response.lower())
+
+        # # Remove stop words and lemmatize tokens
+        # stop_words = set(stopwords.words('english'))
+        # question_tokens = [WordNetLemmatizer().lemmatize(token) for token in question_tokens if token not in stop_words]
+        # answer_tokens = [WordNetLemmatizer().lemmatize(token) for token in answer_tokens if token not in stop_words]
+
+        # # Count matching keywords
+        # matching_keywords = set(question_tokens).intersection(set(answer_tokens))
+        # matching_keywords_fraction = f"{len(matching_keywords)}/{len(set(answer_tokens))}"
+
+        # # Count matching sentences and missing sentences
+        # question_sentences = sent_tokenize(words)
+        # answer_sentences = sent_tokenize(response)
+        # matching_sentences = set(question_sentences).intersection(set(answer_sentences))
+        # matching_sentences_fraction = f"{len(matching_sentences)}/{len(set(answer_sentences))}"
+        # missing_sentences = set(question_sentences).difference(set(answer_sentences))
+
+        # # Find missing words
+        # missing_words = set(question_tokens).difference(set(answer_tokens))
+
+        # # Calculate grammar score using Part-of-Speech tagging
+        # question_pos = pos_tag(question_tokens)
+        # answer_pos = pos_tag(answer_tokens)
+        # matching_pos = set(question_pos).intersection(set(answer_pos))
+        # grammar_score = len(matching_pos) / len(answer_pos)
+
+        # return matching_keywords_fraction, matching_sentences_fraction, grammar_score, list(missing_sentences), list(missing_words)# Tokenize and preprocess words and response

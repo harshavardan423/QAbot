@@ -1,0 +1,131 @@
+<style>
+    body {
+      font-family: 'Helvetica', sans-serif;
+  }
+  #chatbox {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    height: calc(90vh - 100px);
+    width: calc(100vh - 100px);
+    overflow-y: scroll;
+    border-radius: 10px;
+    border-color: black;
+    border: 4px solid rgb(0, 0, 0);
+    background-color: rgb(67, 67, 67);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+  
+  }
+/* 
+  chatbox {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: calc(100vh - 100px);
+  width: calc(100vh - 100px);
+  overflow-y: scroll;
+  border-radius: 10px;
+  border-color: black;
+  border: 4px solid rgb(0, 0, 0);
+  background-color: rgb(67, 67, 67);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+} */
+
+
+  .message {
+    background-color: #bde3b1;
+    border-radius: 10px;
+    border: 4px solid rgb(0, 0, 0);
+    border-color: black;
+    padding: 10px;
+    margin-bottom: 10px;
+    max-width: 80%;
+    
+  }
+
+  .message.sent {
+    background-color: #e7e7e7;
+    border: 4px solid rgb(0, 0, 0);
+    border-radius: 10px;
+    
+    text-align: center;
+  }
+  form {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  margin: 10px;
+}
+  </style>
+  
+  <div id="chatbox">
+    <div class="message">Hi, how can I help you?</div>
+  </div>
+  
+  <form method="POST">
+    <input type="text" name="message" id="user-input" placeholder="Type your message here">
+    <button type="submit" id="send-button">Send</button>
+  </form>
+  
+  <script>
+    // Get the chatbox container element
+    var chatbox = document.getElementById('chatbox');
+  
+    // Function to add a new message to the chatbox
+    function addMessage(message, isSent) {
+      var messageElem = document.createElement('p');
+      messageElem.textContent = message;
+      messageElem.classList.add('message');
+      if (isSent) {
+        messageElem.classList.add('sent');
+      }
+      chatbox.appendChild(messageElem);
+    }
+  
+    // Get the form element
+    var form = document.querySelector('form');
+  
+    // Add event listener for the form's submit event
+    form.addEventListener('submit', function(event) {
+      // Prevent the default behavior of the form
+      event.preventDefault();
+  
+      // Get the user's message
+      var userInput = document.getElementById('user-input');
+      var userMessage = userInput.value;
+  
+      // Add the user's message to the chatbox
+      addMessage(userMessage, true);
+  
+      // Send the user's message to the server and get the chatbot's response
+      fetch('/learn_with_askbot', {
+        method: 'POST',
+        body: new URLSearchParams({
+          message: userMessage
+        })
+      }).then(function(response) {
+        return response.text();
+      }).then(function(response) {
+        // Add the chatbot's response to the chatbox
+        addMessage(response, false);
+      });
+  
+      // Clear the user's message from the input field
+      userInput.value = '';
+    });
+  </script>
+  
