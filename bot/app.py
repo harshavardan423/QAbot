@@ -6,7 +6,9 @@ from bot2 import ask,score
 from bot3 import summarize
 import bot3
 
-
+@app.route('/')
+def index():
+    return render_template('index.html')
 ##ADMIN ROUTES                  
 @app.route('/validate_answer', methods=['GET','POST'])
 def validate_answer():  
@@ -23,6 +25,23 @@ def validate_answer():
             return ("Failed")
     else:
         return render_template('validate_answer.html')
+    
+@app.route('/validate_answer2', methods=['GET','POST'])
+def validate_answer2():  
+    if request.method == 'POST':
+        message = request.form['message']
+        perfect_answer = request.form['perfect_answer']
+        
+        import dm_2
+        # output = str( ask(f"{message}"))
+        # if output != "fail" :  #dm_2.generate_words_list(output)
+        
+        response = score(message,perfect_answer)    
+        return  jsonify( matchingkeywords = str(response[0]), matching_sentences = response[1], missing_words=response[4], missing_sentences = response[3],grammar = response[2],prompt = response[7] )
+        # else :
+        #     return ("Failed")
+    else:
+        return render_template('validate_answer2.html')
 
 @app.route('/new_test', methods=['POST'])
 def new_test():

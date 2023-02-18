@@ -264,6 +264,8 @@ def score(words, response):
         # Count matching keywords
         matching_keywords = set(question_tokens).intersection(set(answer_tokens))
         matching_keywords_fraction = f"{len(matching_keywords)}/{len(set(answer_tokens))}"
+        matching_keywords_fraction_n = len(matching_keywords)/len(set(answer_tokens))
+
 
         # Count matching sentences and missing sentences
         question_sentences = sent_tokenize(words)
@@ -278,6 +280,7 @@ def score(words, response):
             if best_match_score > 75:  # Minimum match score to consider a match
                 matching_sentences += 1
         matching_sentences_fraction = f"{matching_sentences}/{len(answer_sentences)}"
+        matching_sentences_fraction_n = matching_sentences/len(answer_sentences)
         missing_sentences = set(answer_sentences).difference(set(question_sentences))
     
         # Find missing words
@@ -287,7 +290,7 @@ def score(words, response):
         question_pos = pos_tag(question_tokens)
         answer_pos = pos_tag(answer_tokens)
         matching_pos = set(question_pos).intersection(set(answer_pos))
-        grammar_score = len(matching_pos) / len(answer_pos)
+        grammar_score = "{:.2f}".format(len(matching_pos) / len(answer_pos))
 
         # Calculate similarity score using fuzzy matching
         similarity = 0
@@ -296,9 +299,25 @@ def score(words, response):
             for question_sentence in question_sentences:
                 for answer_sentence in answer_sentences:
                     similarity_scores.append(fuzz.token_set_ratio(question_sentence, answer_sentence))
-            similarity = sum(similarity_scores) / len(similarity_scores)
+            similarity = "{:.2f}".format(sum(similarity_scores) / len(similarity_scores))
 
-        return matching_keywords_fraction, matching_sentences_fraction, grammar_score, list(missing_sentences), list(missing_words), similarity
+        from similarity import list_similarity
+
+        sim = list_similarity(answer_sentences,question_sentences)
+
+         # Generate a text prompt based on the matching fraction
+        if matching_keywords_fraction_n < 0.25 and matching_sentences_fraction_n < 0.25:
+            prompt = "It appears that the two sets of text are quite dissimilar. You may want to consider revising one or both sets of text."
+        elif (matching_keywords_fraction_n > 0.5 and matching_keywords_fraction_n < 0.75) and (matching_sentences_fraction_n > 0.5 and matching_sentences_fraction_n < 0.75):
+            prompt = "There is some overlap between the two sets of text, but there is still room for improvement. Consider revising one or both sets of text to increase their similarity."
+        elif (matching_keywords_fraction_n > 0.75 and matching_keywords_fraction_n < 0.85) and (matching_sentences_fraction_n > 0.75 and matching_sentences_fraction_n < 0.85):
+            prompt = "The two sets of text are quite similar. Consider revising one or both sets of text to increase their similarity further."
+        elif (matching_keywords_fraction_n > 0.95 and matching_keywords_fraction_n < 1.0) and (matching_sentences_fraction_n > 0.95 and matching_sentences_fraction_n < 1.0) or sim == 1.0 :
+            prompt = "The two sets of text are very similar."
+        else:
+            prompt = ""
+
+        return matching_keywords_fraction, matching_sentences_fraction, grammar_score, list(missing_sentences), list(missing_words), similarity, sim , prompt
 
     
 
