@@ -10,7 +10,7 @@ import random
 import json
 
 
-with open("C:/Users/H2/Documents/GitHub/QAbot/bot/qa_2.json", encoding="utf-8") as file:
+with open("qa_2.json", encoding="utf-8") as file:
     data = json.load(file)
 
 

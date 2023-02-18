@@ -52,11 +52,11 @@ def pad_data(training, output):
             training.extend(padding)
         return training, output
 
-with open("C:/Users/H2/Documents/GitHub/QAbot/bot/qa_2.json", encoding="utf-8") as file:
+with open("qa_2.json", encoding="utf-8") as file:
     data = json.load(file)
 
 # QA FILE
-with open("C:/Users/H2/Documents/GitHub/QAbot/bot/qa_2.json",encoding="utf-8") as json_file:
+with open("qa_2.json",encoding="utf-8") as json_file:
     qa_data = json.load(json_file)
 
 try:
