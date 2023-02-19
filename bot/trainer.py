@@ -10,7 +10,7 @@ import random
 import json
 
 
-with open("qa_2.json", encoding="utf-8") as file:
+with open("intents\qa_2.json", encoding="utf-8") as file:
     data = json.load(file)
 
 
@@ -77,4 +77,4 @@ net = tflearn.regression(net)
 model = tflearn.DNN(net)
 
 model.fit(training, output, n_epoch=1000, batch_size=8, show_metric=True)
-model.save("model.tflearn")
+model.save("models\model.tflearn")

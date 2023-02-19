@@ -1,7 +1,6 @@
 import nltk 
 from nltk.stem.lancaster import LancasterStemmer
 import json
-stemmer = LancasterStemmer()
 from gensim.models import KeyedVectors
 import numpy as np
 from difflib import SequenceMatcher
@@ -9,7 +8,6 @@ import spacy
 import re
 from transformers import AutoTokenizer, AutoModel
 import torch
-nlp = spacy.load("en_core_web_md")
 import logging
 import numpy
 import pyfiglet
@@ -36,6 +34,12 @@ from nltk.stem import WordNetLemmatizer
 from nltk import pos_tag
 
 
+nlp = spacy.load("en_core_web_md")
+stemmer = LancasterStemmer()
+
+
+
+
 dev_mode = False
 if dev_mode == False :
     tensorflow.compat.v1.logging.set_verbosity(tensorflow.compat.v1.logging.ERROR)
@@ -52,15 +56,15 @@ def pad_data(training, output):
             training.extend(padding)
         return training, output
 
-with open("qa_2.json", encoding="utf-8") as file:
+with open("intents\qa_2.json", encoding="utf-8") as file:
     data = json.load(file)
 
 # QA FILE
-with open("qa_2.json",encoding="utf-8") as json_file:
+with open("intents\qa_2.json",encoding="utf-8") as json_file:
     qa_data = json.load(json_file)
 
 try:
-    with open("data.pickle", "rb") as f:
+    with open("models\data.pickle", "rb") as f:
         words, labels, training, output = pickle.load(f)
 except:
     words = []
@@ -116,7 +120,7 @@ except:
 
     
 
-    with open("data.pickle", "wb") as f:
+    with open("models\data.pickle", "wb") as f:
         pickle.dump((words, labels, training, output), f)
 
 # training, output = pad_data(training, output)
@@ -136,10 +140,10 @@ print(training.shape)
 print(output.shape)
     
 try:
-    model.load("model.tflearn")
+    model.load("models\model.tflearn")
 except:
     model.fit(training, output, n_epoch=1000, batch_size=8, show_metric=True)
-    model.save("model.tflearn")
+    model.save("models\model.tflearn")
 
 def bag_of_words(s, words):
 

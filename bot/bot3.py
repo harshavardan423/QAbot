@@ -7,7 +7,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 
 # Load data from JSON file
-with open('C:/Users/H2/Documents/GitHub/QAbot/bot/training_data.json') as file:
+with open("intents/training_data.json") as file:
     data = json.load(file)
 
 # Extract labeled examples from JSON data
