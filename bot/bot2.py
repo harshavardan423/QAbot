@@ -253,6 +253,22 @@ def scoring_system(words, dictionary):
     
 
 from fuzzywuzzy import fuzz
+from nltk.corpus import wordnet
+def get_synonyms(word):
+    synonyms = set()
+    for syn in wordnet.synsets(word):
+        for lemma in syn.lemmas():
+            synonyms.add(lemma.name().lower())
+    return synonyms
+
+def get_synonyms2(word):
+
+    from intents.od import get_od_synonyms
+
+    synonyms = get_od_synonyms(word)
+
+    return synonyms
+    
 
 def score(words, response):
     if response != 'fail' :
@@ -260,10 +276,35 @@ def score(words, response):
         question_tokens = word_tokenize(words.lower())
         answer_tokens = word_tokenize(response.lower())
 
-        # Remove stop words and lemmatize tokens
-        stop_words = set(stopwords.words('english'))
-        question_tokens = [WordNetLemmatizer().lemmatize(token) for token in question_tokens if token not in stop_words]
-        answer_tokens = [WordNetLemmatizer().lemmatize(token) for token in answer_tokens if token not in stop_words]
+        # Get synonyms for each token
+        question_synonyms = [get_synonyms(token) for token in question_tokens]
+        answer_synonyms = [get_synonyms(token) for token in answer_tokens]
+
+        # Flatten synonym lists
+        question_synonyms_flat = set([synonym for synonyms in question_synonyms for synonym in synonyms])
+        answer_synonyms_flat = set([synonym for synonyms in answer_synonyms for synonym in synonyms])
+
+        # Get synonyms for non-stop words
+        question_tokens_synonyms = []
+        for token in question_tokens:
+            if token in question_synonyms_flat:
+                question_tokens_synonyms.extend(list(get_synonyms(token)))
+            else:
+                question_tokens_synonyms.append(token)
+
+        answer_tokens_synonyms = []
+        for token in answer_tokens:
+            if token in answer_synonyms_flat:
+                answer_tokens_synonyms.extend(list(get_synonyms(token)))
+            else:
+                answer_tokens_synonyms.append(token)
+
+
+        # # Remove stop words and lemmatize tokens
+        # stop_words = set(stopwords.words('english'))
+        # question_tokens = [WordNetLemmatizer().lemmatize(token) for token in question_tokens if token not in stop_words]
+        # answer_tokens = [WordNetLemmatizer().lemmatize(token) for token in answer_tokens if token not in stop_words]
+
 
         # Count matching keywords
         matching_keywords = set(question_tokens).intersection(set(answer_tokens))
@@ -271,13 +312,18 @@ def score(words, response):
         matching_keywords_fraction_n = len(matching_keywords)/len(set(answer_tokens))
 
 
-        # Count matching sentences and missing sentences
+       # Count matching sentences and missing sentences
         question_sentences = sent_tokenize(words)
         answer_sentences = sent_tokenize(response)
         matching_sentences = 0
         for question_sentence in question_sentences:
             best_match_score = 0
             for answer_sentence in answer_sentences:
+                # Replace answer sentence with synonyms
+                for i in range(len(answer_tokens)):
+                    synonyms = get_synonyms(answer_tokens[i])
+                    if synonyms:
+                        answer_sentence = answer_sentence.replace(answer_tokens[i], max(synonyms, key=lambda w: fuzz.token_sort_ratio(w, answer_tokens[i])))
                 match_score = fuzz.token_sort_ratio(question_sentence, answer_sentence)
                 if match_score > best_match_score:
                     best_match_score = match_score
@@ -322,6 +368,7 @@ def score(words, response):
             prompt = ""
 
         return matching_keywords_fraction, matching_sentences_fraction, grammar_score, list(missing_sentences), list(missing_words), similarity, sim , prompt
+        # return question_tokens
 
     
 

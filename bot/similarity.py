@@ -23,10 +23,10 @@ def list_similarity(A, input_list, threshold=0.7):
     
     return avg_similarity
 
-# A = ["Quantum mechanics is a branch of physics that deals with the behavior of matter and energy at the atomic and subatomic level.",     "It is known for the wave-particle duality, which states that particles can exhibit properties of both waves and particles.",     "The uncertainty principle states that certain properties of a particle cannot be known simultaneously with perfect accuracy.",     "In quantum mechanics, a system is described by a wave function, also known as a quantum state, which is governed by the Schrödinger equation."]
+A = ["",     "It is known for the wave-particle duality, which states that particles can exhibit properties of both waves and particles.",     "The uncertainty principle states that certain properties of a particle cannot be known simultaneously with perfect accuracy.",     "In quantum mechanics, a system is described by a wave function, also known as a quantum state, which is governed by the Schrödinger equation."]
      
-# input_list = ["Quantum mechanics, branch of physics that deals with the behavior of matter and energy at the atomic and subatomic level.",              "It is known for the wave-particle duality, which states that particles can exhibit properties of both waves and particles.",              "The uncertainty principle states that certain properties of a particle cannot be known simultaneously with perfect accuracy.",              "In quantum mechanics, a system is described by a wave function, also known as a quantum state, which is governed by the Schrödinger equation."]
+input_list = ["Quantum mechanics, branch of physics that deals with the behavior of matter and energy at the atomic and subatomic level.",              "It is known for the wave-particle duality, which states that particles can exhibit properties of both waves and particles.",              "The uncertainty principle states that certain properties of a particle cannot be known simultaneously with perfect accuracy.",              "In quantum mechanics, a system is described by a wave function, also known as a quantum state, which is governed by the Schrödinger equation."]
 
-# similarity_score = list_similarity(A, input_list, threshold=0.6)
+similarity_score = list_similarity(A, input_list, threshold=0.6)
 
-# print("The similarity score between the two lists is: ", similarity_score)
+print("The similarity score between the two lists is: ", similarity_score)
